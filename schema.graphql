@@ -1,0 +1,30 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    getPerson(id: ID!): PersonResult!
+    listPersons: PersonsResult!
+}
+
+type Mutation {
+    createPerson(name: String!): PersonResult!
+}
+
+type PersonResult {
+    success: Boolean!
+    errors: [String]
+    person: Person
+}
+
+type PersonsResult {
+    success: Boolean!
+    errors: [String]
+    persons: [Person]
+}
+
+type Person {
+    id: ID!
+    name: String!
+}
