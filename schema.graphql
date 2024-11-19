@@ -6,10 +6,13 @@ schema {
 type Query {
     getPerson(id: ID!): PersonResult!
     listPersons: PersonsResult!
+    getAccount(id: ID): AccountResult!
+    listAccounts: AccountsResult!
 }
 
 type Mutation {
     createPerson(name: String!): PersonResult!
+    createAccount(currency: String!, balance: Int!, person_id: ID!): AccountResult!
 }
 
 type PersonResult {
@@ -24,7 +27,28 @@ type PersonsResult {
     persons: [Person]
 }
 
+
+type AccountResult {
+    success: Boolean!
+    errors: [String]
+    account: Account
+}
+
+type AccountsResult {
+    success: Boolean!
+    errors: [String]
+    accounts: [Account]
+}
+
 type Person {
     id: ID!
     name: String!
+    accounts: [Account]
+}
+
+type Account {
+    id: ID!
+    currency: String!
+    balance: Int!
+    person_id: ID!
 }

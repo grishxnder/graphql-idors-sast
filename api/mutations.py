@@ -1,7 +1,5 @@
-from datetime import date
-
 from api import db
-from api.models import Person
+from api.models import Person, Account
 
 def create_person_resolver(obj, info, name):
     try:
@@ -14,10 +12,29 @@ def create_person_resolver(obj, info, name):
             "success": True,
             "person": person.to_dict()
         }
-    except ValueError:  # date format errors
+    except ValueError:
         payload = {
             "success": False,
-            "errors": [f"Incorrect date format provided. Date should be in "
-                       f"the format dd-mm-yyyy"]
+            "errors": [f"Incorrect name"]
+        }
+    return payload
+
+def create_account_resolver(obj, info, currency, balance, person_id):
+    try:
+        account = Account(
+            currency=currency,
+            balance=balance,
+            person_id=person_id
+        )
+        db.session.add(account)
+        db.session.commit()
+        payload = {
+            "success": True,
+            "person": account.to_dict()
+        }
+    except ValueError:
+        payload = {
+            "success": False,
+            "errors": [f"Incorrect parametres"]
         }
     return payload
