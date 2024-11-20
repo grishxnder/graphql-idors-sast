@@ -3,8 +3,8 @@ from ariadne import load_schema_from_path, make_executable_schema, graphql_sync,
 from ariadne.constants import PLAYGROUND_HTML
 from flask import request, jsonify
 from api.insertdata import insertPerson
-from api.queries import listPersons_resolver, getPerson_resolver, listAccounts_resolver, getAccount_resolver
-from api.mutations import create_person_resolver, create_account_resolver
+from api.queries import listPersons_resolver, getPerson_resolver, listAccounts_resolver, getAccount_resolver, getTransaction_resolver, listTransactions_resolver
+from api.mutations import create_person_resolver, create_account_resolver, create_transaction_resolver
 
 @app.route("/graphql", methods=["GET"])
 def graphql_playground():
@@ -37,6 +37,10 @@ def prepare_schema_configuration():
     query.set_field("listAccounts", listAccounts_resolver)
     query.set_field("getAccount", getAccount_resolver)
     mutation.set_field("createAccount", create_account_resolver)
+
+    query.set_field("listTransactions", listTransactions_resolver)
+    query.set_field("getTransaction", getTransaction_resolver)
+    mutation.set_field("createTransaction", create_transaction_resolver)
 
     type_defs = load_schema_from_path("schema.graphql")
     schema = make_executable_schema(type_defs, [query, mutation]) 

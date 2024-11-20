@@ -8,11 +8,14 @@ type Query {
     listPersons: PersonsResult!
     getAccount(id: ID): AccountResult!
     listAccounts: AccountsResult!
+    getTransaction(id: ID): TransactionResult!
+    listTransactions: TransactionsResult!
 }
 
 type Mutation {
     createPerson(name: String!): PersonResult!
     createAccount(currency: String!, balance: Int!, person_id: ID!): AccountResult!
+    createTransaction(currency: String!, amount: Int!, sender_id: ID!, recipient_id: ID!): TransactionResult!
 }
 
 type PersonResult {
@@ -40,6 +43,18 @@ type AccountsResult {
     accounts: [Account]
 }
 
+type TransactionResult {
+    success: Boolean!
+    errors: [String]
+    transaction: Transaction
+}
+
+type TransactionsResult {
+    success: Boolean!
+    errors: [String]
+    transactions: [Transaction]
+}
+
 type Person {
     id: ID!
     name: String!
@@ -51,4 +66,13 @@ type Account {
     currency: String!
     balance: Int!
     person_id: ID!
+    transactions: [Transaction]
+}
+
+type Transaction {
+    id: ID!
+    currency: String!
+    amount: Int!
+    sender_id: ID!
+    recipient_id: ID!
 }
