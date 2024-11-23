@@ -14,8 +14,8 @@ type Query {
 
 type Mutation {
     createPerson(name: String!): PersonResult!
-    createAccount(currency: String!, balance: Int!, person_id: ID!): AccountResult!
-    createTransaction(currency: String!, amount: Int!, sender_id: ID!, recipient_id: ID!): TransactionResult!
+    createAccount(currency: Currency!, balance: Int!, person_id: ID!): AccountResult!
+    createTransaction(currency: Currency!, amount: Int!, sender_id: ID!, recipient_id: ID!): TransactionResult!
 }
 
 type PersonResult {
@@ -63,7 +63,7 @@ type Person {
 
 type Account {
     id: ID!
-    currency: String!
+    currency: Currency!
     balance: Int!
     person_id: ID!
     transactions: [Transaction]
@@ -71,8 +71,14 @@ type Account {
 
 type Transaction {
     id: ID!
-    currency: String!
+    currency: Currency!
     amount: Int!
     sender_id: ID!
     recipient_id: ID!
+}
+
+enum Currency {
+  USD
+  RUB
+  EUR
 }

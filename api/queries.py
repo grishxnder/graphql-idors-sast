@@ -1,5 +1,7 @@
 from .models import Person, Account, Transaction
+from flask import request, jsonify, session, redirect, url_for
 from api import db
+from api.auth import authorization_person, authorization_account, authorization_transaction
 
 def listPersons_resolver(obj, info):
     try:
@@ -17,6 +19,12 @@ def listPersons_resolver(obj, info):
 
 def getPerson_resolver(obj, info, id):
     try:
+        status = authorization_person(info, id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Forbidden']
+            }
         person=Person.query.get(id)
         payload = {
             "success": True,
@@ -47,6 +55,12 @@ def listAccounts_resolver(obj, info):
 
 def getAccount_resolver(obj, info, id):
     try:
+        status = authorization_account(info, id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Forbidden']
+            }
         account =Account.query.get(id)
         payload = {
             "success": True,
@@ -63,7 +77,6 @@ def getAccount_resolver(obj, info, id):
 def listTransactions_resolver(obj, info):
     try:
         transactions = [trans.to_dict() for trans in Transaction.query.all()]
-        print(transactions)
         payload = {
             "success": True,
             "transactions": transactions
@@ -77,8 +90,13 @@ def listTransactions_resolver(obj, info):
 
 def getTransaction_resolver(obj, info, id):
     try:
+        status = authorization_transaction(info, id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Forbidden']
+            }
         transaction=Transaction.query.get(id)
-        print(transaction)
         payload = {
             "success": True,
             "transaction": transaction.to_dict()

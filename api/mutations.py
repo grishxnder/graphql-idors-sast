@@ -1,8 +1,16 @@
 from api import db
 from api.models import Person, Account, Transaction
+from api.auth import authorization_person, authorization_account
+from api.helpers import validate_person, validate_account, validate_transaction
 
 def create_person_resolver(obj, info, name):
     try:
+        status = validate_person(name)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Validate error']
+            }
         person = Person(
             name=name
         )
@@ -21,6 +29,19 @@ def create_person_resolver(obj, info, name):
 
 def create_account_resolver(obj, info, currency, balance, person_id):
     try:
+        status = validate_account(currency, balance, person_id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Validate error']
+            }
+
+        status = authorization_person(info, person_id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Forbidden']
+            }
         account = Account(
             currency=currency,
             balance=balance,
@@ -30,7 +51,7 @@ def create_account_resolver(obj, info, currency, balance, person_id):
         db.session.commit()
         payload = {
             "success": True,
-            "person": account.to_dict()
+            "account": account.to_dict()
         }
     except ValueError:
         payload = {
@@ -41,6 +62,19 @@ def create_account_resolver(obj, info, currency, balance, person_id):
 
 def create_transaction_resolver(obj, info, currency, amount, sender_id, recipient_id):
     try:
+        status = validate_transaction(currency, amount, sender_id, recipient_id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Validate error']
+            }
+        
+        status = authorization_account(info, sender_id)
+        if not status:
+            return {
+                "success": False,
+                "errors": ['Forbidden']
+            }
         transaction = Transaction(
             currency=currency,
             amount=amount,
