@@ -61,7 +61,7 @@ def create_account_resolver(obj, info, currency, balance, person_id):
     return payload
 
 def create_transaction_resolver(obj, info, currency, amount, sender_id, recipient_id):
-    try:
+    try: 
         status = validate_transaction(currency, amount, sender_id, recipient_id)
         if not status:
             return {
@@ -75,6 +75,46 @@ def create_transaction_resolver(obj, info, currency, amount, sender_id, recipien
                 "success": False,
                 "errors": ['Forbidden']
             }
+
+        account = Account.query.get(int(sender_id))
+        if account.to_dict()['currency'] == currency or ((currency == "USD") and (account.to_dict()['currency'] == "EUR")) or ((currency == "EUR") and (account.to_dict()['currency'] == "USD")):
+
+            if int(account.to_dict()['balance']) < amount:
+                return {
+                    "success": False,
+                    "errors": ['Not enough balance']
+                }
+            
+            account.balance = int(account.to_dict()['balance']) - amount
+
+        elif currency == "USD" or currency == "EUR":
+
+            if int(account.to_dict()['balance']) < amount * 100:
+                return {
+                    "success": False,
+                    "errors": ['Not enough balance']
+                }
+            
+            account.balance = int(account.to_dict()['balance']) - amount * 100
+
+        elif currency == "RUB":
+
+            if int(account.to_dict()['balance']) < (amount / 100):
+                return {
+                    "success": False,
+                    "errors": ['Not enough balance']
+                }
+            
+            account.balance = int(account.to_dict()['balance']) - amount / 100
+        
+        recipient = Account.query.get(int(recipient_id))
+        if currency == recipient.to_dict()['currency'] or ((currency == "USD") and (recipient.to_dict()['currency'] == "EUR")) or ((currency == "EUR") and (recipient.to_dict()['currency'] == "USD")):
+            recipient.balance = int(recipient.to_dict()['balance']) + amount
+        elif currency == "USD" or currency == "EUR":
+            recipient.balance = int(recipient.to_dict()['balance']) + amount * 100
+        elif currency == "RUB":
+            recipient.balance = int(recipient.to_dict()['balance']) + amount / 100
+
         transaction = Transaction(
             currency=currency,
             amount=amount,
