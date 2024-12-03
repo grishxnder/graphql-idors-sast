@@ -7,9 +7,14 @@
 - ```You can make the venv (this is optional).```
 - ```pip install -r requirements.txt```
 - ```export FLASK_APP=app.py```
-- mount pg_config: /usr/bin/pg_config /usr/lib/postgresql/17/bin/pg_config
+
+## Database
+- Install the docker container with Postgres image or run it in your localhost.
+
+## Usage
 
 You can now test the simple web app: ```flask run```, go to the http://127.0.0.1:5000/ by the default.
+If you go to the http://127.0.0.1:5000 you will see the DB Version test message.
   
 Make the venv:
 - ```python3 -m venv myapp```
