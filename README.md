@@ -7,18 +7,19 @@
 - ```You can make the venv (this is optional).```
 - ```pip install -r requirements.txt```
 - ```export FLASK_APP=app.py```
+  
+Make the venv:
+- ```python3 -m venv myapp```
+- ```source myapp/bin/activate```
 
 ## Database
 - Install the docker container with Postgres image or run it in your localhost.
 
 ## Usage
 
+Make ```.env``` with POSTGRESS_LOGIN and POSTGRESS_PASSWORD values.
 You can now test the simple web app: ```flask run```, go to the http://127.0.0.1:5000/ by the default.
 If you go to the http://127.0.0.1:5000 you will see the DB Version test message.
-  
-Make the venv:
-- ```python3 -m venv myapp```
-- ```source myapp/bin/activate```
 
 ## Business flow
 
@@ -27,7 +28,7 @@ Make the venv:
 - Try to do some queries.
 - For ex. for create person with name = "name":
 ```
-mutation mutation{
+mutation mutation {
   createPerson(name: "name"){
       success
       errors
@@ -42,7 +43,7 @@ mutation mutation{
 - Go to the ```/setcookie?id=333``` (check it in the ```/getcookie```)
 - Then try to execute:
 ```
-mutation mutation{
+mutation mutation {
 	createAccount(currency:USD balance: 123456, person_id: "333") {
     success
     errors
